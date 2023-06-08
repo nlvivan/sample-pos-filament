@@ -4,6 +4,7 @@ namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Transaction;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +34,11 @@ class CreateOrder extends CreateRecord
         $totalAmount = 0;
 
         foreach ($data['fields'] as $key => $field) {
+
+            $product = Product::find($field['product_id']);
+            $product->stock = $product->stock - $field['quantiy'];
+            $product->save();
+
             $totalAmount += $field['total_amount'];
             $obj = [
                 'transaction_id' => $transaction->id,
